@@ -11,14 +11,14 @@ class IndexMinPQ:
 
     def debug(self):
         print(self._keys)
+        print(self._pq)
+        print(self._qp)
         for i, v in enumerate(self._pq):
             if v == -1:
                 continue
             if self._qp[v] != i:
                 print('_pq and _qp illegal! \n_pq:')
-                print(self._pq)
                 print('_qp:')
-                print(self._qp)
                 return
         print('pass _pq and _qp check')
         for i in self._pq:
@@ -33,7 +33,7 @@ class IndexMinPQ:
     def contains(self, i):
         return self._qp[i] != -1
 
-    def min(self):
+    def minKey(self):
         if self.isEmpty():
             raise ValueError('empty!')
         return self._keys[self._pq[0]]
@@ -45,16 +45,8 @@ class IndexMinPQ:
 
     def delMin(self):
         'return deleted index'
-        if self.isEmpty():
-            raise ValueError('empty!')
-        minindex = self._pq[0]
-        self._size -= 1
-        self._pq[0] = self._pq[self._size]
-        self._qp[self._pq[0]] = 0
-        self._pq[self._size] = -1
-        self._qp[minindex] = -1
-        self._keys[minindex] = -1
-        self._sink(0)
+        minindex = self.minIndex()
+        self.delete(minindex)
         return minindex
 
     def insert(self, i, key):
@@ -66,6 +58,32 @@ class IndexMinPQ:
         self._qp[i] = self._size
         self._size += 1
         self._swim(0, self._size - 1)
+
+    def change(self, i, key):
+        if not self.contains(i):
+            raise ValueError('index is not used')
+
+        oldkey = self._keys[i];
+        if key == oldkey:
+            return
+        self._keys[i] = key
+        if key > oldkey:
+            self._sink(self._qp[i])
+        else:
+            self._swim(0, self._qp[i])
+
+    def delete(self, i):
+        if not self.contains(i):
+            raise ValueError('index is not used')
+
+        index = self._qp[i]
+        self._size -= 1
+        self._pq[index] = self._pq[self._size]
+        self._qp[self._pq[index]] = index
+        self._pq[self._size] = -1
+        self._qp[i] = -1
+        self._keys[i] = -1
+        self._sinkbottom(index)
 
     def _swim(self, startpos, pos):
         'based on _siftdown in heapq from cpython'
@@ -82,7 +100,7 @@ class IndexMinPQ:
         self._pq[pos] = newitem
         self._qp[newitem] = pos
 
-    def _sink(self, pos):
+    def _sinkbottom(self, pos):
         'based on _siftup in heapq from cpython'
         endpos = self._size
         startpos = pos
@@ -103,14 +121,38 @@ class IndexMinPQ:
         self._qp[newitem] = pos
         self._swim(startpos, pos)
 
+    def _sink(self, pos):
+        endpos = self._size
+        newitem = self._pq[pos]
+        childpos = 2 * pos + 1
+        while childpos < endpos:
+            rightpos = childpos + 1
+            rightitem = self._pq[rightpos]
+            childitem = self._pq[childpos]
+            if rightpos < endpos and not self._keys[childitem] < self._keys[rightitem]:
+                childpos = rightpos
+                childitem = self._pq[childpos]
+            if self._keys[newitem] > self._keys[childitem]:
+                self._pq[pos] = childitem
+                self._qp[childitem] = pos
+                pos = childpos
+                childpos = 2 * pos + 1
+                continue
+            break
+        self._pq[pos] = newitem
+        self._qp[newitem] = pos
+
 if __name__ == '__main__':
     pq = IndexMinPQ(10)
     for i in range(1, 7):
         pq.insert(i, 10 + i)
     pq.insert(0, 10)
+    pq.change(2, 2)
+    pq.change(5, 50)
+    pq.delete(1)
     while not pq.isEmpty():
-        print(pq.min())
+        print(pq.minKey())
         pq.delMin()
-        print('after delMin run check')
-        pq.debug()
+        #print('after delMin run check')
+        #pq.debug()
 
