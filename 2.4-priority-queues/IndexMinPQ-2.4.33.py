@@ -24,13 +24,43 @@ class IndexMinPQ:
         for i in self._pq:
             print(self._keys[i])
 
+    def size(self):
+        return self._size
+
+    def isEmpty(self):
+        return self._size == 0
+
     def contains(self, i):
         return self._qp[i] != -1
+
+    def min(self):
+        if self.isEmpty():
+            raise ValueError('empty!')
+        return self._keys[self._pq[0]]
+
+    def minIndex(self):
+        if self.isEmpty():
+            raise ValueError('empty!')
+        return self._pq[0]
+
+    def delMin(self):
+        'return deleted index'
+        if self.isEmpty():
+            raise ValueError('empty!')
+        minindex = self._pq[0]
+        self._size -= 1
+        self._pq[0] = self._pq[self._size]
+        self._qp[self._pq[0]] = 0
+        self._pq[self._size] = -1
+        self._qp[minindex] = -1
+        self._keys[minindex] = -1
+        self._sink(0)
+        return minindex
 
     def insert(self, i, key):
         if self.contains(i):
             raise ValueError('index is used')
-            return
+
         self._keys[i] = key
         self._pq[self._size] = i
         self._qp[i] = self._size
@@ -64,6 +94,7 @@ class IndexMinPQ:
             childitem = self._pq[childpos]
             if rightpos < endpos and not self._keys[childitem] < self._keys[rightitem]:
                 childpos = rightpos
+                childitem = self._pq[childpos]
             self._pq[pos] = childitem
             self._qp[childitem] = pos
             pos = childpos
@@ -77,4 +108,9 @@ if __name__ == '__main__':
     for i in range(1, 7):
         pq.insert(i, 10 + i)
     pq.insert(0, 10)
-    pq.debug()
+    while not pq.isEmpty():
+        print(pq.min())
+        pq.delMin()
+        print('after delMin run check')
+        pq.debug()
+
