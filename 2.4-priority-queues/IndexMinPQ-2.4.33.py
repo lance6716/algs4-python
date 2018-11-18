@@ -44,7 +44,7 @@ class IndexMinPQ:
         return self._pq[0]
 
     def delMin(self):
-        'return deleted index'
+        '''return deleted index'''
         minindex = self.minIndex()
         self.delete(minindex)
         return minindex
@@ -86,7 +86,7 @@ class IndexMinPQ:
         self._sinkbottom(index)
 
     def _swim(self, startpos, pos):
-        'based on _siftdown in heapq from cpython'
+        '''based on _siftdown in heapq from cpython'''
         newitem = self._pq[pos]
         while pos > startpos:
             parentpos = (pos - 1) >> 1
@@ -101,7 +101,7 @@ class IndexMinPQ:
         self._qp[newitem] = pos
 
     def _sinkbottom(self, pos):
-        'based on _siftup in heapq from cpython'
+        '''based on _siftup in heapq from cpython'''
         endpos = self._size
         startpos = pos
         newitem = self._pq[pos]
