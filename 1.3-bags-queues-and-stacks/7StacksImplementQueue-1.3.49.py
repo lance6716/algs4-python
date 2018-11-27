@@ -60,7 +60,7 @@ class Queue:
         if len(self.T) < len(self.H) + 1 and not self.HR:
             return False
 
-        self._copy_step()
+        # self._copy_step()
         status = self._copy_step()
         if status == False:
             self.T = self.T1
@@ -103,4 +103,6 @@ if __name__ == '__main__':
         if i in [5, 8, 14, 15, 19]:
             for _ in range(2):
                 print(q.dequeue())
+    for _ in range(10):
+        print(q.dequeue())
 
