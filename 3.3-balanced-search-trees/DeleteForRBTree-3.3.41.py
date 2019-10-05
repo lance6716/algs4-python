@@ -159,24 +159,14 @@ class RBTree:
         return keys
 
     def keys(self):
-        """
-        Returns all keys in the symbol table
-        To iterate over all of the keys in the symbol table named {@code st},
-        use the foreach notation: {for key in st.keys}
-        """
-        queue = self.deque()
-        self._keys(self.root, queue, self.min(), self.max())
-        return queue
+        yield from self._keys(self.root)
 
-    def _keys(self, x, queue, lo, hi):
+    def _keys(self, x):
         if x is None:
             return
-        if lo < x.key:
-            self._keys(x.left, queue, lo, hi)
-        if lo <= x.key <= hi:
-            queue.append(x.key)
-        if x.key < hi:
-            self._keys(x.right, queue, lo, hi)
+        yield from self._keys(x.left)
+        yield x.key
+        yield from self._keys(x.right)
 
     def max(self):
         return self._max(self.root).key
@@ -349,5 +339,5 @@ if __name__ == '__main__':
     print(rbtree.ceiling(15))
     print(rbtree.floor(15))
     print(rbtree.height())
-    print(rbtree.keys())
+    print(list(rbtree.keys()))
     print(rbtree.level_order())
