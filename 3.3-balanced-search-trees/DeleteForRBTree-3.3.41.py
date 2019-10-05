@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-class RedBlackBST:
+class RBTree:
     from collections import deque
 
     class Node:
@@ -21,7 +21,7 @@ class RedBlackBST:
         # rotate may access null as nodes, so we assume it is black
         if x is None:
             return False
-        return x.color == RedBlackBST.Node.RED
+        return x.color == RBTree.Node.RED
 
     def size(self):
         return self._size(self.root)
@@ -59,7 +59,7 @@ class RedBlackBST:
 
     def put(self, key, val):
         self.root = self._put(self.root, key, val)
-        self.root.color = RedBlackBST.Node.BLACK
+        self.root.color = RBTree.Node.BLACK
 
     def _put(self, x, key, val):
         if x is None:
@@ -88,7 +88,7 @@ class RedBlackBST:
         h.right = x.left
         x.left = h
         x.color = h.color
-        h.color = RedBlackBST.Node.RED # TODO: why?
+        h.color = RBTree.Node.RED # TODO: why?
         x.size = h.size
         self._adjust_size(h)
         return x
@@ -98,7 +98,7 @@ class RedBlackBST:
         h.left = x.right
         x.right = h
         x.color = h.color
-        h.color = RedBlackBST.Node.RED
+        h.color = RBTree.Node.RED
         x.size = h.size
         self._adjust_size(h)
         return x
@@ -275,11 +275,11 @@ class RedBlackBST:
 
         # if both children of root are black, set root to red
         if not self._is_red(self.root.left) and not self._is_red(self.root.right):
-            self.root.color = RedBlackBST.Node.RED
+            self.root.color = RBTree.Node.RED
 
         self.root = self._delete(self.root, key)
         if not self.is_empty():
-            self.root.color = RedBlackBST.Node.BLACK
+            self.root.color = RBTree.Node.BLACK
 
     def _delete(self, h, key):
         if key < h.key:
@@ -309,11 +309,11 @@ class RedBlackBST:
             raise ValueError("BST underflow")
 
         if not self._is_red(self.root.left) and not self._is_red(self.root.right):
-            self.root.color = RedBlackBST.Node.RED
+            self.root.color = RBTree.Node.RED
 
         self.root = self._delete_min(self.root)
         if not self.is_empty():
-            self.root.color = RedBlackBST.Node.BLACK
+            self.root.color = RBTree.Node.BLACK
 
     def _delete_min(self, h):
         if h.left is None:
@@ -335,7 +335,7 @@ class RedBlackBST:
         return h
 
 if __name__ == '__main__':
-    rbtree = RedBlackBST()
+    rbtree = RBTree()
     for i in range(10):
         rbtree.put(i, i * 100)
     print(rbtree.get(4))
